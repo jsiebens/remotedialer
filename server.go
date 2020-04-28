@@ -43,6 +43,10 @@ func New(auth Authorizer, errorWriter ErrorWriter) *Server {
 	}
 }
 
+func (s *Server) CloseSessions(clientKey string) {
+	s.sessions.removeAll(clientKey)
+}
+
 func (s *Server) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	clientKey, authed, peer, err := s.auth(req)
 	if err != nil {

@@ -110,6 +110,20 @@ func (sm *sessionManager) add(clientKey string, conn *websocket.Conn, peer bool)
 	return session
 }
 
+func (sm *sessionManager) removeAll(clientKey string) {
+	sm.Lock()
+	defer sm.Unlock()
+
+	sessions := sm.clients[clientKey]
+	delete(sm.clients, clientKey)
+	for _, s := range sessions {
+		for l := range sm.listeners {
+			l.sessionRemoved(s.clientKey, s.sessionKey)
+		}
+		s.Close()
+	}
+}
+
 func (sm *sessionManager) remove(s *Session) {
 	var isPeer bool
 	sm.Lock()
