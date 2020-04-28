@@ -284,6 +284,7 @@ func (s *Session) Close() {
 	}
 
 	s.conns = map[int64]*connection{}
+	s.conn.conn.Close()
 }
 
 func (s *Session) sessionAdded(clientKey string, sessionKey int64) {
